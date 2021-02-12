@@ -1,61 +1,60 @@
 from rest_framework import serializers
 from rest_framework.validators import UniqueTogetherValidator
 
-from .models import Comment, Follow, Group, Post, User
+from .models import Post, Comment, User, Follow, Group
+
 
 
 class PostSerializer(serializers.ModelSerializer):
-    author = serializers.SlugRelatedField(read_only=True,
-                                          slug_field='username')
+    author = serializers.SlugRelatedField(read_only=True, slug_field='username')
 
     class Meta:
-        fields = '__all__'
+        fields = ('id', 'text', 'author', 'pub_date')
         model = Post
 
 
 class CommentSerializer(serializers.ModelSerializer):
-    author = serializers.SlugRelatedField(read_only=True,
-                                          slug_field='username')
-    post = serializers.SlugRelatedField(read_only=True,
-                                        slug_field='id')
+    author = serializers.SlugRelatedField(read_only=True, slug_field='username')
 
     class Meta:
-        fields = '__all__'
+        fields = ('id', 'author', 'post', 'text', 'created')
         model = Comment
 
 
 class FollowSerializer(serializers.ModelSerializer):
-    following = serializers.SlugRelatedField(
-        queryset=User.objects.all(),
-        slug_field='username',
-    )
     user = serializers.SlugRelatedField(
+        #many=False,
         slug_field='username',
-        read_only=True,
-        default=serializers.CurrentUserDefault(),
-    )
-
-    def validate(self, data):
-        if self.context['request'].user == data['following']:
-            raise serializers.ValidationError('Подписчик и автор совпадают')
-        return data
+        #read_only=True,
+        queryset=User.objects.all(),
+        default=serializers.CurrentUserDefault()
+        )
+    following = serializers.SlugRelatedField(
+        #many=False,
+        slug_field='username',
+        queryset=User.objects.all()
+        )
 
     class Meta:
-        fields = '__all__'
         model = Follow
+        fields = ('user', 'following')
+        validators = (
+            UniqueTogetherValidator(queryset=Follow.objects.all(), fields=('user', 'following')),
+        )
 
-        validators = [
-            UniqueTogetherValidator(
-                queryset=Follow.objects.all(),
-                fields=['user', 'following']
-            )
-        ]
+    def validate(self, data):
+        if self.context['request'].method == "POST":
+            if data.get('user') == data.get('following'):
+                raise serializers.ValidationError('You cant follow yourself')
+            return data
+        #return data
+        #following = data['following']
+        #data['user'] = self.context['request'].user
+        #follow = Follow.objects.filter(following=following, user=data['user']).exists()
 
 
 class GroupSerializer(serializers.ModelSerializer):
-    class Meta:
-        #  Оставляю, как есть, иначе автотесты не пропускают.
-        #  Плюс такой набор полей предусмотрен в ТЗ.
-        fields = ('title', 'id',)
-        model = Group
 
+    class Meta:
+        fields = ('id', 'title')
+        model = Group
