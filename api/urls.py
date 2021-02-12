@@ -13,6 +13,4 @@ router.register('group', GroupViewSet, basename='GroupViewSet')
 
 urlpatterns = [
     path('', include(router.urls)),
-    #path('follow/', FollowViewSet.as_view()),
-    #path('group/', GroupViewSet.as_view())
 ]

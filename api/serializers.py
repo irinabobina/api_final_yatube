@@ -23,14 +23,11 @@ class CommentSerializer(serializers.ModelSerializer):
 
 class FollowSerializer(serializers.ModelSerializer):
     user = serializers.SlugRelatedField(
-        #many=False,
         slug_field='username',
-        #read_only=True,
         queryset=User.objects.all(),
         default=serializers.CurrentUserDefault()
         )
     following = serializers.SlugRelatedField(
-        #many=False,
         slug_field='username',
         queryset=User.objects.all()
         )
@@ -47,10 +44,6 @@ class FollowSerializer(serializers.ModelSerializer):
             if data.get('user') == data.get('following'):
                 raise serializers.ValidationError('You cant follow yourself')
             return data
-        #return data
-        #following = data['following']
-        #data['user'] = self.context['request'].user
-        #follow = Follow.objects.filter(following=following, user=data['user']).exists()
 
 
 class GroupSerializer(serializers.ModelSerializer):
