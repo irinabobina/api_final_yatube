@@ -68,6 +68,6 @@ def follow_3(user_2, another_user):
 
 
 @pytest.fixture
-def follow_4(another_user, user):
+def follow_4(another_user, user_2):
     from api.models import Follow
-    return Follow.objects.create(user=another_user, following=user)
+    return Follow.objects.create(user=another_user, following=user_2)
