@@ -11,7 +11,6 @@ class PostSerializer(serializers.ModelSerializer):
     class Meta:
         fields = ('id', 'text', 'author', 'pub_date')
         model = Post
-# не пишу '__all__, т.к. там есть ещё поле group
 
 
 class CommentSerializer(serializers.ModelSerializer):

@@ -8,7 +8,8 @@ from .serializers import PostSerializer, CommentSerializer, FollowSerializer, Gr
 from .permissions import IsOwnerOrReadOnly
 
 
-class CreateListModelViewSet(mixins.CreateModelMixin, mixins.ListModelMixin, viewsets.GenericViewSet):
+class CreateListModelViewSet(mixins.CreateModelMixin,
+                             mixins.ListModelMixin, viewsets.GenericViewSet):
     pass
 
 
@@ -54,4 +55,3 @@ class GroupViewSet(CreateListModelViewSet):
     queryset = Group.objects.all()
     serializer_class = GroupSerializer
     permission_classes = [IsAuthenticatedOrReadOnly]
-    http_method_names = ('get', 'post')
