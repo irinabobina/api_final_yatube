@@ -1,10 +1,18 @@
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import viewsets, filters, mixins
-from rest_framework.permissions import IsAuthenticatedOrReadOnly, IsAuthenticated
+from rest_framework.permissions import (
+    IsAuthenticatedOrReadOnly,
+    IsAuthenticated,
+)
 from rest_framework.generics import get_object_or_404
 
 from api.models import Post, Follow, Group
-from .serializers import PostSerializer, CommentSerializer, FollowSerializer, GroupSerializer
+from .serializers import (
+    PostSerializer,
+    CommentSerializer,
+    FollowSerializer,
+    GroupSerializer,
+)
 from .permissions import IsOwnerOrReadOnly
 
 
