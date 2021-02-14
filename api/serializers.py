@@ -5,18 +5,21 @@ from .models import Post, Comment, User, Follow, Group
 
 
 class PostSerializer(serializers.ModelSerializer):
-    author = serializers.SlugRelatedField(read_only=True, slug_field='username')
+    author = serializers.SlugRelatedField(read_only=True,
+                                          slug_field='username')
 
     class Meta:
         fields = ('id', 'text', 'author', 'pub_date')
         model = Post
+# не пишу '__all__, т.к. там есть ещё поле group
 
 
 class CommentSerializer(serializers.ModelSerializer):
-    author = serializers.SlugRelatedField(read_only=True, slug_field='username')
+    author = serializers.SlugRelatedField(read_only=True,
+                                          slug_field='username')
 
     class Meta:
-        fields = ('id', 'author', 'post', 'text', 'created')
+        fields = '__all__'
         model = Comment
 
 
@@ -35,7 +38,8 @@ class FollowSerializer(serializers.ModelSerializer):
         model = Follow
         fields = ('user', 'following')
         validators = (
-            UniqueTogetherValidator(queryset=Follow.objects.all(), fields=('user', 'following')),
+            UniqueTogetherValidator(queryset=Follow.objects.all(),
+                                    fields=('user', 'following')),
         )
 
     def validate(self, data):
